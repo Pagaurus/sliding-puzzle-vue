@@ -22,14 +22,6 @@
     })
   )
 
-  let grid=useTemplateRef('grid');
-
-  window.addEventListener("resize", ()=>{
-    let gridCSS = window.getComputedStyle(grid.value);
-
-    console.log(gridCSS["width"] + ", " + gridCSS["height"]);
-  })
-
   let position = reactive(randomNums(9, 1000));
 
   let exchanges = [];
@@ -63,18 +55,6 @@
     }
   }
 
-  function testCoords(a, b){
-    if(
-      (Math.abs(a.x - b.x) == 1 && a.y == b.y)
-      ^
-      (Math.abs(a.y - b.y) == 1 && a.x == b.x)
-    ){
-      return true;
-    }else{
-      return false;
-    }
-  }
-
   function runGame(selected){
     if(highlighted != null){
       if(selected != highlighted){
@@ -84,7 +64,11 @@
         if(
             (position[highlighted] == 8 || position[selected] == 8)
           &&
-            testCoords(newCoords, oldCoords)
+            (
+              (Math.abs(newCoords.x - oldCoords.x) == 1 && newCoords.y == oldCoords.y)
+              ^
+              (Math.abs(newCoords.y - oldCoords.y) == 1 && newCoords.x == oldCoords.x)
+            )
         ){
           exchanges = [];
 
@@ -103,10 +87,8 @@
     }
 
     if(highlighted != selected){
-      //if(testCoords(newCoords, oldCoords)){
       highlighted = selected;
       board[highlighted].highlight();
-      //}
     }else{
       highlighted = null;
     }
@@ -125,7 +107,7 @@
         x: exchanges[i - 1].x - getCoords(i - 1).x,
         y: exchanges[i - 1].y - getCoords(i - 1).y
       } : {x: 0, y: 0}"
-      @click="runGame(i - 1); console.log(this)"
+      @click="runGame(i - 1);"
       key="i - 1"
     />
   </div>
